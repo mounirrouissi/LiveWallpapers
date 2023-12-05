@@ -18,12 +18,13 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
 import moe.cyunrei.videolivewallpaper.utils.DocumentUtils.getPath
 
-class MainActivity : AppCompatActivity()  {
+class MainActivity : AppCompatActivity(),CategoriesFragment.CategoryFragmentListener  {
     private var isDarkTheme = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity()  {
         setAppropriateTheme()
 
         setContentView(R.layout.main_activity)
-        permissionCheck
+        /*permissionCheck
         findViewById<Button?>(R.id.choose_video_file).apply {
             setOnClickListener { chooseVideo() }
         }
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity()  {
                     startActivity(it)
                 }
             }
-        }
+        }*/
         setupBottomNavigation()
     }
     private fun setupBottomNavigation() {
@@ -82,28 +83,30 @@ class MainActivity : AppCompatActivity()  {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    // TODO: Handle home action
+                    // Load HomeFragment
+                    loadFragment(HomeFragment())
                 }
                 R.id.navigation_categories -> {
-                /* supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, CategoriesFragment())
-                .commit();*/
-                    Intent(this@MainActivity, CategoriesActivity::class.java).also {
-                        startActivity(it)
-                    }
+                    // Load CategoriesFragment
+                    loadFragment(CategoriesFragment())
                 }
                 R.id.navigation_prime -> {
-                    // TODO: Handle prime action
+                    // Load PrimeFragment or relevant fragment
+//                    loadFragment(PrimeFragment())
                 }
                 R.id.navigation_settings -> {
-                    // Navigate to Settings Activity
-                    Intent(this@MainActivity, SettingsActivity::class.java).also {
-                        startActivity(it)
-                    }
+                    // Load SettingsFragment
+//                    loadFragment(SettingsFragment())
                 }
             }
             true
         }
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -179,5 +182,9 @@ class MainActivity : AppCompatActivity()  {
             }
             VideoLiveWallpaperService.setToWallPaper(this)
         }
+    }
+
+    override fun onCategorySelected(categoryName: String) {
+        TODO("Not yet implemented")
     }
 }
