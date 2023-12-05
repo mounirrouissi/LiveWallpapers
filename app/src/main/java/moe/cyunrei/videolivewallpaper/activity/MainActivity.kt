@@ -85,7 +85,12 @@ class MainActivity : AppCompatActivity()  {
                     // TODO: Handle home action
                 }
                 R.id.navigation_categories -> {
-                    // TODO: Handle categories action
+                /* supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, CategoriesFragment())
+                .commit();*/
+                    Intent(this@MainActivity, CategoriesActivity::class.java).also {
+                        startActivity(it)
+                    }
                 }
                 R.id.navigation_prime -> {
                     // TODO: Handle prime action
