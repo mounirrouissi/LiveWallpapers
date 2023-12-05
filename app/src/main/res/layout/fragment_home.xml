@@ -15,21 +15,4 @@
         android:background="@drawable/neumorphic_button_bg"
         android:textAppearance="@style/BoldText" />
 
-    <Button
-        android:id="@+id/add_video_file_path"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/add_video_file_path"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/settings"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/settings"
-        android:textAllCaps="false" />
 </LinearLayout>

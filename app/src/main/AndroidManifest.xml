@@ -21,8 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CategoriesActivity"/>
-        <activity android:name=".activity.NewActivity"/>
+
+        <activity android:name=".activity.NewActivity"></activity>
+
 
         <activity
             android:name="moe.cyunrei.videolivewallpaper.activity.SettingsActivity"
@@ -31,6 +32,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="moe.cyunrei.videolivewallpaper.activity.MainActivity" />
         </activity>
 
         <service

@@ -22,4 +22,5 @@
     <!--preference-->
     <string name="preference_play_video_with_sound" translatable="false">play_video_with_sound</string>
     <string name="preference_hide_icon_from_launcher" translatable="false">hide_icon_from_launcher</string>
+    <string name="rate_app_key" translatable="false">rate</string>
 </resources>

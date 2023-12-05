@@ -3,12 +3,15 @@
 package moe.cyunrei.videolivewallpaper.activity
 
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.Preference.OnPreferenceChangeListener
 import android.preference.PreferenceActivity
 import android.preference.SwitchPreference
+import android.view.MenuItem
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
 import java.io.IOException
@@ -17,6 +20,11 @@ class SettingsActivity : PreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.settings)
+        // Find the rate app preference
+        findPreference(getString(R.string.rate_app_key)).setOnPreferenceClickListener {
+            openAppInPlayStore()
+            true
+        }
         (findPreference(this.resources.getString(R.string.preference_play_video_with_sound)) as SwitchPreference).apply {
             this.onPreferenceChangeListener =
                 OnPreferenceChangeListener { _, _ ->
@@ -72,5 +80,30 @@ class SettingsActivity : PreferenceActivity() {
                 false
             }
         }
+
+        val actionBar = actionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun openAppInPlayStore() {
+        val appPackageName = packageName // Get your app package name
+
+        try {
+            // Try to open the app page on Google Play
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
+        } catch (anfe: android.content.ActivityNotFoundException) {
+            // If Google Play is not installed, open in a web browser
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                // Finish the activity when the user presses the 'up' button
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

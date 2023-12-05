@@ -96,7 +96,9 @@ class MainActivity : AppCompatActivity(),CategoriesFragment.CategoryFragmentList
                 }
                 R.id.navigation_settings -> {
                     // Load SettingsFragment
-//                    loadFragment(SettingsFragment())
+                    Intent(this@MainActivity, SettingsActivity::class.java).also {
+                        startActivity(it)
+                    }
                 }
             }
             true

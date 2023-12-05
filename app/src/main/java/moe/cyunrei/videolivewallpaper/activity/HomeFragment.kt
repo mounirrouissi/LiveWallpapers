@@ -41,7 +41,7 @@ class HomeFragment : Fragment() {
             chooseVideo()
         }
 
-        view.findViewById<Button>(R.id.add_video_file_path).setOnClickListener {
+        /*view.findViewById<Button>(R.id.add_video_file_path).setOnClickListener {
             val edit = EditText(requireActivity())
             AlertDialog.Builder(requireActivity()).apply {
                 setTitle(getString(R.string.add_path))
@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
 
         view.findViewById<Button>(R.id.settings).setOnClickListener {
             startActivity(Intent(requireActivity(), SettingsActivity::class.java))
-        }
+        }*/
     }
 
 
