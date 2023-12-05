@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LightTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/background_color</item>
+        <item name="colorPrimaryDark">@color/background_color</item>
+        <!-- Other customizations -->
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Other styles -->
+
+    <!-- Bold Text Style -->
+    <style name="BoldText">
+        <item name="android:textSize">18sp</item> <!-- Adjust text size as needed -->
+        <item name="android:textStyle">bold</item>
+
+
+        <item name="android:textColor">@color/your_text_color</item> <!-- Define your text color -->
+    </style>
+
+</resources>

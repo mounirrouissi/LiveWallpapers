@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Button Color -->
+    <color name="your_button_color">#F0F0F0</color> <!-- Light gray color -->
+    <color name="background_color">#RRRR</color> <!-- Light gray color -->
+
+    <!-- Stroke Color -->
+    <color name="your_stroke_color">#D6D6D6</color> <!-- Slightly darker shade for the stroke -->
+    <color name="your_text_color">#fffaaa</color> <!-- Slightly darker shade for the stroke -->
+
+    <!-- Shadow Color -->
+    <color name="your_shadow_color">#B0B0B0</color> <!-- Gray color for the shadow -->
+
+    <!-- You can define other colors as needed here -->
+</resources>
