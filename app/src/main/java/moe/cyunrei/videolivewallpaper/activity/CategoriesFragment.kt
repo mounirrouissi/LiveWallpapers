@@ -1,5 +1,6 @@
 package moe.cyunrei.videolivewallpaper.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,15 +26,15 @@ class CategoriesFragment : Fragment(), OnCategoryClickListener {
 
         return view
     }
-   /* override fun onCategoryClicked(categoryName: String) {
-        val intent = Intent(this, NewActivity::class.java)
+    override fun onCategoryClicked(categoryName: String) {
+        val intent = Intent(context, NewActivity::class.java)
         intent.putExtra("CATEGORY_NAME", categoryName)
         startActivity(intent)
-    }*/
+    }
 
-   override fun onCategoryClicked(categoryName: String) {
+  /* override fun onCategoryClicked(categoryName: String) {
        (activity as? CategoryFragmentListener)?.onCategorySelected(categoryName)
-   }
+   }*/
     interface CategoryFragmentListener {
         fun onCategorySelected(categoryName: String)
     }

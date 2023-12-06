@@ -6,6 +6,9 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
+
+
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/newActivityToolbar"
         android:layout_width="match_parent"

@@ -16,7 +16,9 @@ import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
 
 import android.Manifest
 import android.content.pm.PackageManager
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class HomeFragment : Fragment() {
@@ -35,9 +37,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize RecyclerViews
+
+
+
+
+        val recyclerViewRecent = view.findViewById<RecyclerView>(R.id.recyclerViewRecent)
+        recyclerViewRecent.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerViewRecent.adapter = WallpaperAdapter(listOf())
 
         permissionCheck()
-        view.findViewById<Button>(R.id.choose_video_file).setOnClickListener {
+        val chooseVideoButton = view.findViewById<FloatingActionButton>(R.id.fab)
+        chooseVideoButton.setOnClickListener {
             chooseVideo()
         }
 
