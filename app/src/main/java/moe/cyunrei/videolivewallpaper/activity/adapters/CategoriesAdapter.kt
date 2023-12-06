@@ -1,4 +1,4 @@
-package moe.cyunrei.videolivewallpaper.activity
+package moe.cyunrei.videolivewallpaper.activity.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
+import moe.cyunrei.videolivewallpaper.activity.OnCategoryClickListener
 
 class CategoriesAdapter(
         private val categoriesList: List<String>,

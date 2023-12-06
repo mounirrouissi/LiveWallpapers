@@ -1,4 +1,4 @@
-package moe.cyunrei.videolivewallpaper.activity
+package moe.cyunrei.videolivewallpaper.activity.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
+import moe.cyunrei.videolivewallpaper.activity.adapters.CategoriesAdapter
+import moe.cyunrei.videolivewallpaper.activity.CategoryActivity
+import moe.cyunrei.videolivewallpaper.activity.OnCategoryClickListener
 
 class CategoriesFragment : Fragment(), OnCategoryClickListener {
     private lateinit var categoriesRecyclerView: RecyclerView
@@ -27,7 +30,7 @@ class CategoriesFragment : Fragment(), OnCategoryClickListener {
         return view
     }
     override fun onCategoryClicked(categoryName: String) {
-        val intent = Intent(context, NewActivity::class.java)
+        val intent = Intent(context, CategoryActivity::class.java)
         intent.putExtra("CATEGORY_NAME", categoryName)
         startActivity(intent)
     }

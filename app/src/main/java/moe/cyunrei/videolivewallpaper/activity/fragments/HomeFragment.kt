@@ -1,24 +1,20 @@
-package moe.cyunrei.videolivewallpaper.activity
+package moe.cyunrei.videolivewallpaper.activity.fragments
 
-import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import moe.cyunrei.videolivewallpaper.R
-import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
 
 import android.Manifest
 import android.content.pm.PackageManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
 
 
 class HomeFragment : Fragment() {
@@ -43,8 +39,19 @@ class HomeFragment : Fragment() {
 
 
         val recyclerViewRecent = view.findViewById<RecyclerView>(R.id.recyclerViewRecent)
-        recyclerViewRecent.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerViewRecent.adapter = WallpaperAdapter(listOf())
+        recyclerViewRecent.layoutManager = GridLayoutManager(context,2)
+
+        // Sample data - replace with actual data
+        val sampleData = listOf(
+            CardViewAdapter.WallpaperItem(R.drawable.animal),
+            CardViewAdapter.WallpaperItem(R.drawable.animal),
+            CardViewAdapter.WallpaperItem(R.drawable.animal),
+            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
+            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
+            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
+            // Add more items as needed
+        )
+        recyclerViewRecent.adapter = CardViewAdapter(sampleData)
 
         permissionCheck()
         val chooseVideoButton = view.findViewById<FloatingActionButton>(R.id.fab)

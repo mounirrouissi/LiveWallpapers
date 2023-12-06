@@ -1,39 +1,46 @@
 package moe.cyunrei.videolivewallpaper.activity
 
 import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import moe.cyunrei.videolivewallpaper.R
+import moe.cyunrei.videolivewallpaper.activity.fragments.CategoriesFragment
+import moe.cyunrei.videolivewallpaper.activity.fragments.HomeFragment
+import moe.cyunrei.videolivewallpaper.activity.fragments.PremiumFragment
 import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
 import moe.cyunrei.videolivewallpaper.utils.DocumentUtils.getPath
 
-class MainActivity : AppCompatActivity(),CategoriesFragment.CategoryFragmentListener  {
+class MainActivity : AppCompatActivity(), CategoriesFragment.CategoryFragmentListener  {
     private var isDarkTheme = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+       /* val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
+        // Optional: If you want to remove the default title text
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+*/
         loadThemeState()
         setAppropriateTheme()
 
         setContentView(R.layout.main_activity)
+        // Initialize and load the HomeFragment as the default fragment
+        loadFragment(HomeFragment())
+
+        // Existing code for setting up the Bottom Navigation
+        setupBottomNavigation()
         /*permissionCheck
         findViewById<Button?>(R.id.choose_video_file).apply {
             setOnClickListener { chooseVideo() }
@@ -76,7 +83,7 @@ class MainActivity : AppCompatActivity(),CategoriesFragment.CategoryFragmentList
                 }
             }
         }*/
-        setupBottomNavigation()
+
     }
     private fun setupBottomNavigation() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
@@ -92,7 +99,7 @@ class MainActivity : AppCompatActivity(),CategoriesFragment.CategoryFragmentList
                 }
                 R.id.navigation_prime -> {
                     // Load PrimeFragment or relevant fragment
-//                    loadFragment(PrimeFragment())
+                    loadFragment(PremiumFragment())
                 }
                 R.id.navigation_settings -> {
                     // Load SettingsFragment

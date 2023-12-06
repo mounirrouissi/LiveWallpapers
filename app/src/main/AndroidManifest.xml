@@ -24,11 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.NewActivity" />
+        <activity android:name=".activity.ImageViewActivity" />
+        <activity android:name=".activity.CategoryActivity" />
         <activity
             android:name=".activity.SettingsActivity"
             android:exported="false"
-            android:label="@string/settings">
+            android:label="Settings"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>

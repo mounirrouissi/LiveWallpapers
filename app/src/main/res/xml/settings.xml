@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/wallpaper_settings">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="play_video_with_sound"
             android:title="@string/play_video_with_sound"
@@ -9,7 +9,7 @@
             android:summaryOn="@string/enable" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/applications_settings">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="hide_icon_from_launcher"
             android:title="@string/hide_icon_from_launcher"
@@ -24,6 +24,6 @@
     </PreferenceCategory>
     <Preference
         android:key="rate"
-        android:title="rate us"
+        android:title="@string/rate"
         android:summary="summary" />
 </PreferenceScreen>

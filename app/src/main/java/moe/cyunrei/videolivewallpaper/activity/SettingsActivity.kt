@@ -1,105 +1,30 @@
-@file:Suppress("DEPRECATION")
-
 package moe.cyunrei.videolivewallpaper.activity
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.preference.Preference.OnPreferenceChangeListener
-import android.preference.PreferenceActivity
-import android.preference.SwitchPreference
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import moe.cyunrei.videolivewallpaper.R
-import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
-import java.io.IOException
+import moe.cyunrei.videolivewallpaper.activity.fragments.SettingsFragment
 
-class SettingsActivity : PreferenceActivity() {
+class SettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addPreferencesFromResource(R.xml.settings)
-        // Find the rate app preference
-        findPreference(getString(R.string.rate_app_key)).setOnPreferenceClickListener {
-            openAppInPlayStore()
-            true
-        }
-        (findPreference(this.resources.getString(R.string.preference_play_video_with_sound)) as SwitchPreference).apply {
-            this.onPreferenceChangeListener =
-                OnPreferenceChangeListener { _, _ ->
-                    if (this.isChecked) {
-                        this.isChecked = false
-                        VideoLiveWallpaperService.muteMusic(this@SettingsActivity)
-                        try {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                Runtime.getRuntime().exec("rm " + filesDir.toPath() + "/unmute")
-                            } else {
-                                Runtime.getRuntime()
-                                    .exec("rm /data/data/moe.cyunrei.videolivewallpaper/files/unmute")
-                            }
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                    } else {
-                        this.isChecked = true
-                        VideoLiveWallpaperService.unmuteMusic(this@SettingsActivity)
-                        try {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                Runtime.getRuntime().exec("touch " + filesDir.toPath() + "/unmute")
-                            } else {
-                                Runtime.getRuntime()
-                                    .exec("touch /data/data/moe.cyunrei.videolivewallpaper/files/unmute")
-                            }
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                    }
-                    false
-                }
-        }
-        (findPreference(this.resources.getString(R.string.preference_hide_icon_from_launcher)) as SwitchPreference).apply {
-            val switchPreferenceThis = this
-            val packageManager = packageManager
-            val componentName = ComponentName(this@SettingsActivity, MainActivity::class.java)
-            this.onPreferenceChangeListener = OnPreferenceChangeListener { _, _ ->
-                if (switchPreferenceThis.isChecked) {
-                    packageManager.setComponentEnabledSetting(
-                        componentName,
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                        PackageManager.DONT_KILL_APP
-                    )
-                } else {
-                    packageManager.setComponentEnabledSetting(
-                        componentName,
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                        PackageManager.DONT_KILL_APP
-                    )
-                }
-                switchPreferenceThis.isChecked = !switchPreferenceThis.isChecked
-                false
-            }
-        }
+        setContentView(R.layout.settings)
 
-        val actionBar = actionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+        val toolbar = findViewById<Toolbar>(R.id.settings_toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.settings_container, SettingsFragment())
+            .commit()
     }
 
-    private fun openAppInPlayStore() {
-        val appPackageName = packageName // Get your app package name
-
-        try {
-            // Try to open the app page on Google Play
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
-        } catch (anfe: android.content.ActivityNotFoundException) {
-            // If Google Play is not installed, open in a web browser
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
-        }
-    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                // Finish the activity when the user presses the 'up' button
                 finish()
                 return true
             }

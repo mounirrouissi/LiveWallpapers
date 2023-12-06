@@ -1,35 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp">
-
-
-
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/newActivityToolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/toolbar_gradient2"
+        android:elevation="4dp"/>
 
-        <ImageView
-            android:id="@+id/category_background_image"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/newActivityToolbar"
+        android:padding="4dp"/>
 
-        <TextView
-            android:id="@+id/category_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/homeAsUpIndicator"
-            android:padding="16dp"
-            android:gravity="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_centerInParent="true"
-            tools:ignore="UnknownId" />
-
-    </androidx.appcompat.widget.Toolbar>
-</com.google.android.material.card.MaterialCardView>
+</RelativeLayout>
