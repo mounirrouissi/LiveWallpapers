@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
 import moe.cyunrei.videolivewallpaper.R
 import java.io.IOException
 
@@ -32,7 +33,7 @@ class ImageViewActivity : AppCompatActivity() {
         showSetAsOptions()
         }
         // Set up the back button
-        val backButton = findViewById<ImageView>(R.id.backButton)
+        val backButton = findViewById<MaterialButton>(R.id.backButton)
         backButton.setOnClickListener {
             // Finish the activity to return to the previous screen
             finish()
@@ -49,6 +50,10 @@ class ImageViewActivity : AppCompatActivity() {
                 1 -> setAsLockScreen()
                 2 -> setAsBoth()
             }
+        }
+        // Add a "Cancel" button to the dialog
+        builder.setNegativeButton("Cancel") { dialog, which ->
+            dialog.dismiss() // Dismiss the dialog when the "Cancel" button is clicked
         }
         builder.show()
     }

@@ -3,7 +3,11 @@
     <!-- Button Color -->
     <color name="your_button_color">#F0F0F0</color> <!-- Light gray color -->
     <color name="background_color">#RRRR</color> <!-- Light gray color -->
-
+    <color name="background_color_pricing">#FFFFFF</color> <!-- Main background color -->
+    <color name="plan_basic_color">#FFEBEE</color> <!-- Basic Plan Card Background -->
+    <color name="plan_premium_color">#E1BEE7</color> <!-- Premium Plan Card Background -->
+    <color name="plan_unlimited_color">#C8E6C9</color> <!-- Unlimited Plan Card Background -->
+    <!-- ... other colors ... -->
     <!-- Stroke Color -->
     <color name="your_stroke_color">#D6D6D6</color> <!-- Slightly darker shade for the stroke -->
     <color name="your_text_color">#fffaaa</color> <!-- Slightly darker shade for the stroke -->

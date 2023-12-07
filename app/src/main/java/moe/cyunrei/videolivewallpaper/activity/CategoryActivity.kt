@@ -34,13 +34,17 @@ class CategoryActivity : AppCompatActivity() {
 
         // Sample data - replace with actual data
         val sampleData = listOf(
-            CardViewAdapter.WallpaperItem(R.drawable.animal), // Replace with your data and drawable
-            CardViewAdapter.WallpaperItem(R.drawable.animal), // Replace with your data and drawable
-            CardViewAdapter.WallpaperItem(R.drawable.animal), // Replace with your data and drawable
-            CardViewAdapter.WallpaperItem(R.drawable.animal), // Replace with your data and drawable
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+
             // Add more items as needed
         )
-        recyclerView.adapter = CardViewAdapter(sampleData)
+
+        recyclerView.adapter = CardViewAdapter(sampleData, listener = null)
 
 
 

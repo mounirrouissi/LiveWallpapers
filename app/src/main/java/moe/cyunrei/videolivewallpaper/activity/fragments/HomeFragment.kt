@@ -43,15 +43,16 @@ class HomeFragment : Fragment() {
 
         // Sample data - replace with actual data
         val sampleData = listOf(
-            CardViewAdapter.WallpaperItem(R.drawable.animal),
-            CardViewAdapter.WallpaperItem(R.drawable.animal),
-            CardViewAdapter.WallpaperItem(R.drawable.animal),
-            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
-            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
-            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
+
             // Add more items as needed
         )
-        recyclerViewRecent.adapter = CardViewAdapter(sampleData)
+        recyclerViewRecent.adapter = CardViewAdapter(sampleData, listener = null)
 
         permissionCheck()
         val chooseVideoButton = view.findViewById<FloatingActionButton>(R.id.fab)

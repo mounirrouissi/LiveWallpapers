@@ -5,13 +5,13 @@
         <item name="colorPrimaryDark">@color/background_color</item>
         <!-- Other customizations -->
     </style>
-    <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Dialog.Alert">
-        <!-- Customize your theme here. -->
-        <item name="colorAccent">@color/background_color</item>
-        <item name="android:textColorPrimary">#505461</item>
-        <item name="android:background">#132155</item>
-        <!-- More styling can be added if needed -->
-    </style>
+        <style name="CustomAlertDialog" parent="Theme.MaterialComponents.Dialog.Alert">
+            <!-- Customize your theme here. -->
+            <item name="colorAccent">@color/background_color</item>
+            <item name="android:textColorPrimary">#505461</item>
+            <item name="android:background">#132155</item>
+            <!-- More styling can be added if needed -->
+        </style>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->

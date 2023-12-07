@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
+        <!-- Improved gradient overlay for better text contrast -->
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -31,7 +32,11 @@
             android:gravity="center"
             android:padding="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:fontFamily=""
-            android:textAllCaps="true"/>
+            android:shadowColor="#80000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="4"
+        android:fontFamily="sans-serif-medium"
+        android:textAllCaps="true"/>
     </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

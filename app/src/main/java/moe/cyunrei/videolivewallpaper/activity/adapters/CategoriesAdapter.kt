@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
-import moe.cyunrei.videolivewallpaper.activity.OnCategoryClickListener
+import moe.cyunrei.videolivewallpaper.activity.listners.OnCategoryClickListener
 
 class CategoriesAdapter(
         private val categoriesList: List<String>,

@@ -22,3 +22,4 @@ Version: 0.1.4.4_200811_nano
 - Crash after selected video below Android 8.0
 ## Application Preview
 ![](https://github.com/Cyunrei/Video-Live-Wallpaper/blob/master/preview.gif)
+

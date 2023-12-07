@@ -1,19 +1,17 @@
 package moe.cyunrei.videolivewallpaper.activity.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
+import moe.cyunrei.videolivewallpaper.activity.listners.PremiumItemListener
 
-class PremiumFragment : Fragment() {
+class PremiumFragment : Fragment(),PremiumItemListener {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,15 +28,25 @@ class PremiumFragment : Fragment() {
 
         // Sample data - replace with actual data
         val sampleData = listOf(
-            CardViewAdapter.WallpaperItem(R.drawable.animal),
-            CardViewAdapter.WallpaperItem(R.drawable.animal),
-            CardViewAdapter.WallpaperItem(R.drawable.animal),
-            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
-            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
-            CardViewAdapter.WallpaperItem(R.drawable.animal),// Replace 'dummy_image' with your image in drawable
+            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
+            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
+
             // Add more items as needed
         )
-        recyclerViewRecent.adapter = CardViewAdapter(sampleData)
+        recyclerViewRecent.adapter = CardViewAdapter(sampleData, true, this)
+    }
+
+    override fun onPremiumItemClicked() {
+        // Navigate to the PricingFragment or Activity
+        // If using a FragmentManager to handle the navigation
+        val transaction = fragmentManager?.beginTransaction()
+        transaction?.replace(R.id.fragment_container, PricingFragment())
+        transaction?.addToBackStack(null)
+        transaction?.commit()
     }
 
 }

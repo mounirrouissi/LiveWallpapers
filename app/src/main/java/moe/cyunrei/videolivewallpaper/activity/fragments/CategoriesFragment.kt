@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.adapters.CategoriesAdapter
 import moe.cyunrei.videolivewallpaper.activity.CategoryActivity
-import moe.cyunrei.videolivewallpaper.activity.OnCategoryClickListener
+import moe.cyunrei.videolivewallpaper.activity.listners.OnCategoryClickListener
 
 class CategoriesFragment : Fragment(), OnCategoryClickListener {
     private lateinit var categoriesRecyclerView: RecyclerView
