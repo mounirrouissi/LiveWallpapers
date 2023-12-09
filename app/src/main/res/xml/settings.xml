@@ -21,6 +21,10 @@
             android:key="version_preference"
             android:title="@string/version"
             android:summary="@string/version_name" />
+        <Preference
+            android:key="feedback"
+            android:title="@string/feedback"
+            android:summary="@string/give_feedback" />
     </PreferenceCategory>
     <Preference
         android:key="rate"

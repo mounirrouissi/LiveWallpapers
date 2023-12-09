@@ -20,7 +20,8 @@ import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
 class HomeFragment : Fragment() {
     companion object {
         private const val REQUEST_READ_STORAGE_PERMISSION = 1000
-        private const val CHOOSE_VIDEO_REQUEST_CODE = 1001
+        const val CHOOSE_VIDEO_REQUEST_CODE = 1001
+
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,14 +44,15 @@ class HomeFragment : Fragment() {
 
         // Sample data - replace with actual data
         val sampleData = listOf(
-            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,false),
-
-            // Add more items as needed
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+// Add more items as needed
         )
         recyclerViewRecent.adapter = CardViewAdapter(sampleData, listener = null)
 

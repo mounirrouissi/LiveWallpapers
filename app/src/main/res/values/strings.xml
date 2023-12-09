@@ -71,4 +71,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="back">bqck</string>
     <string name="set_as">set as</string>
+    <string name="your_feedback">Your Feedback\n</string>
+    <string name="send">Send</string>
+    <string name="feedback">Feedback</string>
+    <string name="give_feedback">Give Feedback</string>
 </resources>

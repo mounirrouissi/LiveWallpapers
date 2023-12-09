@@ -28,14 +28,11 @@ class PremiumFragment : Fragment(),PremiumItemListener {
 
         // Sample data - replace with actual data
         val sampleData = listOf(
-            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
-            CardViewAdapter.WallpaperItem(R.drawable.animal,true),
-
-            // Add more items as needed
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
+// Add more items as needed
         )
         recyclerViewRecent.adapter = CardViewAdapter(sampleData, true, this)
     }

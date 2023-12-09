@@ -26,12 +26,12 @@ class MainActivity : AppCompatActivity(), CategoriesFragment.CategoryFragmentLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       /* val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        /* val toolbar: Toolbar = findViewById(R.id.toolbar)
+         setSupportActionBar(toolbar)
 
-        // Optional: If you want to remove the default title text
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-*/
+         // Optional: If you want to remove the default title text
+         supportActionBar?.setDisplayShowTitleEnabled(false)
+ */
         loadThemeState()
         setAppropriateTheme()
 

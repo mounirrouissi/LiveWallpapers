@@ -23,6 +23,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             openAppInPlayStore()
             true
         }
+        val feedbackPref = findPreference<Preference>("feedback")
+        feedbackPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            // Code to replace the current fragment with FeedbackFragment
+            val transaction = fragmentManager?.beginTransaction()
+            transaction?.replace(R.id.settings_container, FeedbackFragment())
+            transaction?.addToBackStack(null)
+            transaction?.commit()
+            true
+        }
+
 
         // Set up sound preference
         setupSoundPreference()

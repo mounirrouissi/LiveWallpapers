@@ -7,15 +7,16 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- ImageView should be defined before the Button -->
-    <ImageView
-        android:id="@+id/imageViewFull"
+    <!-- Replace ImageView with VideoView -->
+    <VideoView
+        android:id="@+id/videoView"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSetAs"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/buttonSetAs"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Back Button -->
     <com.google.android.material.button.MaterialButton
@@ -26,13 +27,13 @@
         app:icon="@drawable/back"
         app:iconTint="@color/background_color_pricing"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:backgroundTint="@null"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
-        android:focusable="true"
-        tools:ignore="MissingConstraints" />
+        android:focusable="true" />
 
-    <!-- Other Button -->
+    <!-- Set As Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSetAs"
         android:layout_width="0dp"
