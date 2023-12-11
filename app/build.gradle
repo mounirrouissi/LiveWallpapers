@@ -45,6 +45,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'com.android.billingclient:billing:6.1.0' // Check for the latest version
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1' // Replace with the latest version
 
 
 }

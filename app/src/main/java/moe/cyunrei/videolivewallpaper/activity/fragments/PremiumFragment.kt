@@ -1,5 +1,6 @@
 package moe.cyunrei.videolivewallpaper.activity.fragments
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
+
 import moe.cyunrei.videolivewallpaper.activity.listners.PremiumItemListener
 
 class PremiumFragment : Fragment(),PremiumItemListener {
@@ -34,7 +36,7 @@ class PremiumFragment : Fragment(),PremiumItemListener {
             CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
 // Add more items as needed
         )
-        recyclerViewRecent.adapter = CardViewAdapter(sampleData, true, this)
+        recyclerViewRecent.adapter = CardViewAdapter(sampleData, listener = null)
     }
 
     override fun onPremiumItemClicked() {

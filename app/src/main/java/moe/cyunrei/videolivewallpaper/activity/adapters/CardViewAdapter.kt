@@ -1,104 +1,104 @@
 package moe.cyunrei.videolivewallpaper.activity.adapters
 
-import android.app.WallpaperManager
-import android.content.ComponentName
-import android.content.Context
+
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
 import android.net.Uri
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
-
+import moe.cyunrei.videolivewallpaper.activity.ImageViewActivity
 import moe.cyunrei.videolivewallpaper.activity.listners.PremiumItemListener
-import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
+import java.io.File
+
 
 class CardViewAdapter(
-    private val items: List<WallpaperItem>,
-    private val isPremium: Boolean = false,
+    items: List<WallpaperItem>, private val isPremium: Boolean = false,
     private val listener: PremiumItemListener?
-) : RecyclerView.Adapter<CardViewAdapter.ViewHolder>() {
+) :
+    RecyclerView.Adapter<CardViewAdapter.ViewHolder>() {
+    private val items // Replace WallpaperItem with your data model class
+            : List<WallpaperItem>
+
+    init {
+        this.items = items
+        println("PREMIUM =========$isPremium")
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.item_card_view, parent, false)
+
+        val v: View =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_card_view, parent, false)
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
-        val thumbnail = getVideoThumbnail(holder.itemView.context, item.videoUri)
-        holder.thumbnailImageView.setImageBitmap(thumbnail)
+        val item: WallpaperItem = items[position]
+        val videoUri = Uri.parse(item.ImageResource)
+        val videoFile = File(videoUri.path)
+        val thumbnail: Bitmap? = ThumbnailUtils.createVideoThumbnail(
+            videoFile.absolutePath,
+            MediaStore.Images.Thumbnails.MINI_KIND
+        )
 
-        holder.thumbnailImageView.setOnClickListener {
+
+        // Set the thumbnail as the image for the ImageView
+        holder.imageView.setImageBitmap(thumbnail)
+        // Handle click event on the card's image
+        holder.imageView.setOnClickListener {
+            // If the clicked item is premium, invoke the listener's method to handle the premium click
             if (isPremium) {
                 listener?.onPremiumItemClicked()
             } else {
-                setAsWallpaper(item.videoUri, holder.itemView.context)
-                showMessage("Lock screen wallpaper set successfully." ,holder.itemView.context)
-                /*val context = holder.itemView.context
-                val intent = Intent(context, WallpaperOptionsActivity::class.java)
-                intent.putExtra("VIDEO_URI", item.videoUri)
-                context.startActivity(intent) */           }
+                // For non-premium items, continue with the normal flow
+                val context = holder.itemView.context
+                val intent = Intent(context, ImageViewActivity::class.java)
+                intent.putExtra("IMAGE_RESOURCE", item.ImageResource)
+                context.startActivity(intent)
+            }
         }
 
+        // Set the visibility of the premium icon depending on whether the item is premium
         holder.premiumIcon.visibility = if (item.isPremium) View.VISIBLE else View.GONE
-    }
 
-    private fun setAsWallpaper(videoUri: String, context: Context) {
-        // Save the video path for the service
-        saveVideoPathForService(context, videoUri)
 
-        // Prepare the intent to launch the live wallpaper chooser
-        val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
-            putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, ComponentName(context, VideoLiveWallpaperService::class.java))
-        }
-        context.startActivity(intent)
 
 
     }
 
-
-
-    private fun saveVideoPathForService(context: Context, videoPath: String) {
-        val sharedPrefs = context.getSharedPreferences("LiveWallpaperPrefs", Context.MODE_PRIVATE)
-        sharedPrefs.edit().putString("videoPath", videoPath).apply()
+    override fun getItemCount(): Int {
+        return items.size
     }
-
-
-    override fun getItemCount(): Int = items.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnailImageView)
-        var premiumIcon: ImageView = itemView.findViewById(R.id.premiumIcon)
-        var cardView: CardView = itemView.findViewById(R.id.cardView)
-    }
+        var imageView: ImageView
+        var premiumIcon: ImageView
+        var cardView:CardView
+        init {
+            imageView = itemView.findViewById<ImageView>(R.id.imageView)
+            premiumIcon = itemView.findViewById<ImageView>(R.id.premiumIcon)
+            cardView = itemView.findViewById<CardView>(R.id.cardView)
 
-    private fun getVideoThumbnail(context: Context, videoPath: String): Bitmap? {
-        val retriever = MediaMetadataRetriever()
-        return try {
-            retriever.setDataSource(context, Uri.parse(videoPath))
-            retriever.getFrameAtTime(-1)
-        } catch (e: Exception) {
-            null
-        } finally {
-            retriever.release()
         }
     }
-    private fun showMessage(message: String, context: Context) {
-        AlertDialog.Builder(context)
-            .setTitle("Error")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-            .show()
-    }
     data class WallpaperItem(
-        val videoUri: String,
-        val isPremium: Boolean
+        val ImageResource: String,
+        val isPremium: Boolean // Indicates if the wallpaper is a premium item
     )
+    /* data class WallpaperItem(
+         val id: Int,
+         val ImageResource: Int,
+         val imageUrl: String,
+         val isPremium: Boolean // Indicates if the wallpaper is a premium item
+     )*/
+}
+
+private fun ImageView.setImageResource(imageResource: String) {
+
 }
