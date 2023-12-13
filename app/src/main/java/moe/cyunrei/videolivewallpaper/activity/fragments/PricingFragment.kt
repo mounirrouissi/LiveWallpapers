@@ -39,7 +39,7 @@ class PricingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-         billingClient = BillingClient.newBuilder(requireContext())
+        billingClient = BillingClient.newBuilder(requireContext())
             .enablePendingPurchases() // Required as per Google Play Billing Library
             .setListener { billingResult, purchases ->
                 // Handle the purchase
@@ -74,7 +74,6 @@ class PricingFragment : Fragment() {
     }
 
 
-
     private fun choosePlan(planName: String) {
         AlertDialog.Builder(requireContext())
             .setTitle("Confirm Your Selection")
@@ -93,7 +92,8 @@ class PricingFragment : Fragment() {
         val skuList = ArrayList<String>()
         skuList.add(planName) // Replace with actual SKU from Google Play Console
         val params = SkuDetailsParams.newBuilder()
-        params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS) // or SkuType.INAPP for one-time products
+        params.setSkusList(skuList)
+            .setType(BillingClient.SkuType.SUBS) // or SkuType.INAPP for one-time products
         billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
                 for (skuDetails in skuDetailsList) {
@@ -111,7 +111,7 @@ class PricingFragment : Fragment() {
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             // Send purchase token to your server for verification
-         //   sendPurchaseToServerForVerification(purchase.purchaseToken)
+            //   sendPurchaseToServerForVerification(purchase.purchaseToken)
 
             // If you don't have a server, you can acknowledge the purchase directly, but it's less secure
             if (!purchase.isAcknowledged) {
@@ -136,137 +136,19 @@ class PricingFragment : Fragment() {
         }
     }
 
-    
-
-   
-
-
     private fun grantEntitlementToUser(purchase: Purchase) {
-        when (purchase.signature) {
-            "single_wallpaper_sku" -> {
-                // Unlock the single wallpaper for the user
-                unlockWallpaperForUser("")
-            }
-            "monthly_subscription_sku" -> {
-                // Activate the monthly subscription for the user
-                activateMonthlySubscriptionForUser(purchase)
-            }
-        }
+
     }
 
-    private fun activateMonthlySubscriptionForUser(purchase: Purchase) {
-        // Save the subscription status
-        val sharedPreferences = requireContext().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("hasActiveSubscription", true)
-        editor.apply()
-
-        // Enable features associated with the subscription
-        enableSubscriptionFeatures()
-
-        // Keep track of the subscription expiration date
-        val purchaseTime = purchase.purchaseTime
-        val oneMonthInMillis = 30L * 24 * 60 * 60 * 1000
-        val expirationDate = purchaseTime + oneMonthInMillis
-        editor.putLong("subscriptionExpirationDate", expirationDate)
-        editor.apply()
-
-
-        // Handle subscription renewal or cancellation
-        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS) { billingResult, purchases ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                for (purchase in purchases) {
-                    if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                        // The subscription is still active
-                        if (!purchase.isAcknowledged) {
-                            val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.purchaseToken)
-                                .build()
-                            billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                                    // Update UI and handle successful acknowledgment
-                                    updateUiWithActiveSubscription()
-                                } else {
-                                    // Handle acknowledgment failure
-                                    handleAcknowledgePurchaseFailure(billingResult.responseCode)
-                                }
-                            }
-                        } else {
-                            // Update UI and handle existing active subscription
-                            updateUiWithActiveSubscription()
-                        }
-                    } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-                        // The subscription is pending, handle this case accordingly
-                        handlePendingPurchases()
-                    } /*else if (purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
-                        // The subscription is cancelled, remove the subscription status
-                        editor.putBoolean("hasActiveSubscription", false)
-                        editor.apply()
-                        //updateUiWithInactiveSubscription()
-                    }*/ else {
-                        // Handle any other unexpected purchase states
-                        handleUnexpectedPurchaseState(purchase.purchaseState)
-                    }
-                }
-            } else {
-                // Handle query purchases failure
-                handleQueryPurchasesFailure(billingResult)
+    private fun handlePendingPurchases() {
+        for (purchase in pendingPurchases) {
+            if (isConnectedToInternet() || isConnectedToInternetNetwork()) {
+                // Try to acknowledge the purchase
+                handlePurchase(purchase)
             }
         }
-
-
-
     }
 
-    private fun updateUiWithActiveSubscription() {
-        TODO("Not yet implemented")
-    }
-
-    private fun enableSubscriptionFeatures() {
-        TODO("Not yet implemented")
-    }
-
-
-    private fun unlockWallpaperForUser(wallpaperId: String) {
-        // Save the purchased wallpaper ID in SharedPreferences
-        val sharedPreferences = requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putBoolean(wallpaperId, true)
-        editor.apply()
-
-        // Update the UI to reflect the purchase
-     //   updateUIForPurchasedWallpaper(wallpaperId)
-
-        // Download the wallpaper if necessary
-       // downloadWallpaperIfNecessary(wallpaperId)
-    }
-
-
-
-    private fun sendPurchaseToServerForVerification(purchaseToken: String) {
-/*
-        // Create a new network request to your server
-        val request = Request.Builder()
-            .url("https://your-server.com/verify_purchase?purchaseToken=$purchaseToken")
-            .build()
-
-        // Send the request and handle the response
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                // Handle the error
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    // The purchase token was verified successfully
-                    grantEntitlementToUser(purchase)
-                } else {
-                    // The purchase token verification failed
-                }
-            }
-        })
-*/
-    }
 
 
     //utils methods
@@ -304,32 +186,19 @@ class PricingFragment : Fragment() {
         Toast.makeText(requireContext(), "Failed to query purchases: ${billingResult.responseCode}", Toast.LENGTH_SHORT).show()
     }
 
-    private fun handlePendingPurchases() {
-        for (purchase in pendingPurchases) {
-            if (isConnectedToInternet() || isConnectedToInternetNetwork()) {
-                // Try to acknowledge the purchase
-                handlePurchase(purchase)
-            }
-            // Update the UI to reflect the pending state
-            updateUiForPendingPurchase(purchase)
-        }
-    }
+ 
 
     private fun updateUiForPendingPurchase(purchase: Purchase) {
-      /*  // Find the UI element that corresponds to this purchase
-        val wallpaperView = findWallpaperViewBySku(purchase.sku)
-
-        // Create a ProgressBar to show the pending state
-        val progressBar = ProgressBar(this)
-        progressBar.isIndeterminate = true
-
-        // Add the ProgressBar to the wallpaper view
-        wallpaperView.addView(progressBar)*/
+        /*  // Find the UI element that corresponds to this purchase
+          val wallpaperView = findWallpaperViewBySku(purchase.sku)
+          // Create a ProgressBar to show the pending state
+          val progressBar = ProgressBar(this)
+          progressBar.isIndeterminate = true
+          // Add the ProgressBar to the wallpaper view
+          wallpaperView.addView(progressBar)*/
 
         Toast.makeText(requireContext(), "Your purchase is pending...", Toast.LENGTH_LONG).show()
 
     }
-
-
 
 }

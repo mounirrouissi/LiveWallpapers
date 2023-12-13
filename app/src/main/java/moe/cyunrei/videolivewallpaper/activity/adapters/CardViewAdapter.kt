@@ -58,7 +58,7 @@ class CardViewAdapter(
         // Handle click event on the card's image
         holder.imageView.setOnClickListener {
             if (isPremium) {
-//                listener?.onPremiumItemClicked()
+                listener?.onPremiumItemClicked()
             } else {
                 setAsWallpaper(item.ImageResource, holder.itemView.context)
 
