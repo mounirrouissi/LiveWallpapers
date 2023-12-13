@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
             CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
             CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
             CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
-            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.v1, false),
 // Add more items as needed
         )
         recyclerViewRecent.adapter = CardViewAdapter(sampleData, listener = null)

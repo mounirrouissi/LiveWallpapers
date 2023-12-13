@@ -57,18 +57,11 @@ class CardViewAdapter(
         holder.imageView.setImageBitmap(thumbnail)
         // Handle click event on the card's image
         holder.imageView.setOnClickListener {
-            // If the clicked item is premium, invoke the listener's method to handle the premium click
             if (isPremium) {
-                listener?.onPremiumItemClicked()
+//                listener?.onPremiumItemClicked()
             } else {
-                // Save the video path for the service
-                holder.imageView.context.openFileOutput("video_live_wallpaper_file_path", Context.MODE_PRIVATE).use {
-                    it.write(videoUri.toString().toByteArray())
-                }
+                setAsWallpaper(item.ImageResource, holder.itemView.context)
 
-                // Restart the VideoLiveWallpaperService
-                val serviceIntent = Intent(holder.imageView.context, VideoLiveWallpaperService::class.java)
-                context.startActivity(serviceIntent)
             }
         }
 
@@ -77,6 +70,31 @@ class CardViewAdapter(
 
 
 
+
+    }
+
+    private fun setAsWallpaper(videoUri: String, context: Context?) {
+        val videoFilePath = context?.openFileOutput(
+            "video_live_wallpaper_file_path",
+            Context.MODE_PRIVATE
+        ).use {
+            if (it != null) {
+                it.write(videoUri.toByteArray())
+            }
+        }
+
+        val fileName = "video_live_wallpaper_file_path"
+        context?.openFileOutput(fileName, Context.MODE_PRIVATE).use {
+            it?.write(videoUri.toByteArray())
+        }
+
+// Prepare the intent to launch the live wallpaper chooser
+        val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
+            putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                context?.let { ComponentName(it, VideoLiveWallpaperService::class.java) })
+            putExtra("video_file_path", fileName) // Pass the name of the file
+        }
+        context?.startActivity(intent)
 
     }
 

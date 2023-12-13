@@ -3,8 +3,10 @@ package moe.cyunrei.videolivewallpaper.service
 import android.app.WallpaperManager
 import android.content.*
 import android.media.MediaPlayer
+import android.net.Uri
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
+import android.util.Log
 import java.io.File
 import java.io.IOException
 
@@ -12,13 +14,14 @@ class VideoLiveWallpaperService : WallpaperService() {
     internal inner class VideoEngine : Engine() {
         private var mediaPlayer: MediaPlayer? = null
         private var broadcastReceiver: BroadcastReceiver? = null
-        private var videoFilePath: String? = null
+        private var videoUri: Uri? = null
 
         override fun onCreate(surfaceHolder: SurfaceHolder) {
             super.onCreate(surfaceHolder)
-            videoFilePath =
+            val videoFilePath =
                 this@VideoLiveWallpaperService.openFileInput("video_live_wallpaper_file_path")
                     .bufferedReader().readText()
+            videoUri = Uri.parse(videoFilePath)
             val intentFilter = IntentFilter(VIDEO_PARAMS_CONTROL_ACTION)
             registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
@@ -36,11 +39,15 @@ class VideoLiveWallpaperService : WallpaperService() {
             super.onSurfaceCreated(holder)
             mediaPlayer = MediaPlayer().apply {
                 setSurface(holder.surface)
-                setDataSource(videoFilePath)
+                videoUri?.let { setDataSource(this@VideoLiveWallpaperService, it) }
                 isLooping = true
                 setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
-                prepare()
-                start()
+                try {
+                    prepare()
+                    start()
+                } catch (e: IOException) {
+                    Log.e("LiveWallpaperService", "Failed to prepare MediaPlayer", e)
+                }
             }
             try {
                 val file = File("$filesDir/unmute")
