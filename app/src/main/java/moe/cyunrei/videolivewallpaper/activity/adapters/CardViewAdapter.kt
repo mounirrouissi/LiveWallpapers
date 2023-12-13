@@ -1,8 +1,12 @@
 package moe.cyunrei.videolivewallpaper.activity.adapters
 
 
+import android.app.WallpaperManager
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
@@ -15,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.ImageViewActivity
 import moe.cyunrei.videolivewallpaper.activity.listners.PremiumItemListener
+import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
 import java.io.File
 
 
@@ -40,12 +45,12 @@ class CardViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item: WallpaperItem = items[position]
+        val context = holder.itemView.context
         val videoUri = Uri.parse(item.ImageResource)
         val videoFile = File(videoUri.path)
-        val thumbnail: Bitmap? = ThumbnailUtils.createVideoThumbnail(
-            videoFile.absolutePath,
-            MediaStore.Images.Thumbnails.MINI_KIND
-        )
+        val retriever = MediaMetadataRetriever()
+        val thumbnail = getVideoThumbnail(holder.itemView.context, item.ImageResource)
+
 
 
         // Set the thumbnail as the image for the ImageView
@@ -56,11 +61,14 @@ class CardViewAdapter(
             if (isPremium) {
                 listener?.onPremiumItemClicked()
             } else {
-                // For non-premium items, continue with the normal flow
-                val context = holder.itemView.context
-                val intent = Intent(context, ImageViewActivity::class.java)
-                intent.putExtra("IMAGE_RESOURCE", item.ImageResource)
-                context.startActivity(intent)
+                // Save the video path for the service
+                holder.imageView.context.openFileOutput("video_live_wallpaper_file_path", Context.MODE_PRIVATE).use {
+                    it.write(videoUri.toString().toByteArray())
+                }
+
+                // Restart the VideoLiveWallpaperService
+                val serviceIntent = Intent(holder.imageView.context, VideoLiveWallpaperService::class.java)
+                context.startActivity(serviceIntent)
             }
         }
 
@@ -70,6 +78,18 @@ class CardViewAdapter(
 
 
 
+    }
+
+    private fun getVideoThumbnail(context: Context, videoPath: String): Bitmap? {
+        val retriever = MediaMetadataRetriever()
+        return try {
+            retriever.setDataSource(context, Uri.parse(videoPath))
+            retriever.getFrameAtTime(-1)
+        } catch (e: Exception) {
+            null
+        } finally {
+            retriever.release()
+        }
     }
 
     override fun getItemCount(): Int {
