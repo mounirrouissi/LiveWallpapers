@@ -7,9 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
-import android.media.ThumbnailUtils
 import android.net.Uri
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +15,7 @@ import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
-import moe.cyunrei.videolivewallpaper.activity.ImageViewActivity
+import moe.cyunrei.videolivewallpaper.activity.fragments.PricingFragment
 import moe.cyunrei.videolivewallpaper.activity.listners.PremiumItemListener
 import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
 import java.io.File
@@ -44,34 +42,40 @@ class CardViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item: WallpaperItem = items[position]
-        val context = holder.itemView.context
-        val videoUri = Uri.parse(item.ImageResource)
-        val videoFile = File(videoUri.path)
-        val retriever = MediaMetadataRetriever()
-        val thumbnail = getVideoThumbnail(holder.itemView.context, item.ImageResource)
+            val item: WallpaperItem = items[position]
+            val context = holder.itemView.context
+//            val videoUri = Uri.parse(item.ImageResource)
+//            val videoFile = File(videoUri.toString())
+//            val retriever = MediaMetadataRetriever()
+//            val thumbnail = getVideoThumbnail(holder.itemView.context, item.ImageResource)
+            val thumbnail = item.thumbnail
 
+            // Set the thumbnail as the image for the ImageView
+            holder.imageView.setImageBitmap(thumbnail)
 
-
-        // Set the thumbnail as the image for the ImageView
-        holder.imageView.setImageBitmap(thumbnail)
-        // Handle click event on the card's image
-        holder.imageView.setOnClickListener {
-            if (isPremium) {
-                listener?.onPremiumItemClicked()
-            } else {
-                setAsWallpaper(item.ImageResource, holder.itemView.context)
-
+            // Handle click event on the card's image
+            holder.imageView.setOnClickListener {
+                if (item.isPremium) {
+                    // The wallpaper is premium
+                    val purchasedWallpaper = PricingFragment.getPurchasedWallpaper(context)
+                    if (purchasedWallpaper != null && purchasedWallpaper.id == item.id) {
+                        // The wallpaper has already been purchased, so set it directly
+                        setAsWallpaper(item.ImageResource, holder.itemView.context)
+                    } else {
+                        // The wallpaper has not been purchased, so show the pricing dialogue
+                        listener?.onPremiumItemClicked()
+                    }
+                } else {
+                    // The wallpaper is not premium, so set it as the wallpaper
+                    setAsWallpaper(item.ImageResource, holder.itemView.context)
+                }
             }
+
+            // Set the visibility of the premium icon depending on whether the item is premium
+            holder.premiumIcon.visibility = if (item.isPremium) View.VISIBLE else View.GONE
         }
 
-        // Set the visibility of the premium icon depending on whether the item is premium
-        holder.premiumIcon.visibility = if (item.isPremium) View.VISIBLE else View.GONE
 
-
-
-
-    }
 
     private fun setAsWallpaper(videoUri: String, context: Context?) {
         val videoFilePath = context?.openFileOutput(
@@ -126,8 +130,10 @@ class CardViewAdapter(
         }
     }
     data class WallpaperItem(
+        val id: String?,
         val ImageResource: String,
-        val isPremium: Boolean // Indicates if the wallpaper is a premium item
+        val isPremium: Boolean, // Indicates if the wallpaper is a premium item
+        val thumbnail: Bitmap?
     )
     /* data class WallpaperItem(
          val id: Int,

@@ -30,13 +30,18 @@ class PremiumFragment : Fragment(),PremiumItemListener {
 
         // Sample data - replace with actual data
         val sampleData = listOf(
-            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
-            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
-            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
-            CardViewAdapter.WallpaperItem("android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
-// Add more items as needed
+            CardViewAdapter.WallpaperItem(
+                "1",
+                "android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy,
+                true,
+                null
+            ),
+//            CardViewAdapter.WallpaperItem(1,"android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
+//            CardViewAdapter.WallpaperItem(1,"android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
+//            CardViewAdapter.WallpaperItem(1,"android.resource://" + requireContext().packageName + "/" + R.raw.mobile_straw_hat_luffy, true),
+//// Add more items as needed
         )
-        recyclerViewRecent.adapter = CardViewAdapter(sampleData, listener = null)
+        recyclerViewRecent.adapter = CardViewAdapter(sampleData,true, this)
     }
 
     override fun onPremiumItemClicked() {
@@ -47,5 +52,4 @@ class PremiumFragment : Fragment(),PremiumItemListener {
         transaction?.addToBackStack(null)
         transaction?.commit()
     }
-
 }

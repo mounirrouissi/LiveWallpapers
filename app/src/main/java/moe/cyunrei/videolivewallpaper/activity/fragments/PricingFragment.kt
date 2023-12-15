@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -18,8 +17,8 @@ import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetailsParams
-import com.google.android.material.snackbar.Snackbar
 import moe.cyunrei.videolivewallpaper.R
+import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -137,8 +136,26 @@ class PricingFragment : Fragment() {
     }
 
     private fun grantEntitlementToUser(purchase: Purchase) {
+        // Get the wallpaper information from the purchase
+        val wallpaperId = purchase.skus.first()
+        val wallpaperUrl = "url_of_the_wallpaper" // You need to replace this with the actual URL
+        val isPremium = true // You need to replace this with the actual premium status
 
+        // Get the SharedPreferences editor
+        val sharedPref = requireContext().getSharedPreferences("MyAppSharedPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+
+        // Store the wallpaper information in the shared preferences
+        editor.putString("wallpaperId", wallpaperId)
+        editor.putString("wallpaperUrl", wallpaperUrl)
+        editor.putBoolean("isPremium", isPremium)
+
+        // Commit the changes
+        editor.apply()
     }
+
+
+
 
     private fun handlePendingPurchases() {
         for (purchase in pendingPurchases) {
@@ -198,6 +215,23 @@ class PricingFragment : Fragment() {
           wallpaperView.addView(progressBar)*/
 
         Toast.makeText(requireContext(), "Your purchase is pending...", Toast.LENGTH_LONG).show()
+
+    }
+
+    companion object {
+        fun getPurchasedWallpaper(context: Context): CardViewAdapter.WallpaperItem? {
+            // Get the SharedPreferences
+            val sharedPref = context.getSharedPreferences("MyAppSharedPrefs", Context.MODE_PRIVATE)
+
+
+            // Retrieve the wallpaper information from the shared preferences
+            val wallpaperId = sharedPref.getString("wallpaperId", "")
+            val wallpaperUrl = sharedPref.getString("wallpaperUrl", null)
+            val isPremium = sharedPref.getBoolean("isPremium", false)
+
+            // Return the wallpaper
+            return CardViewAdapter.WallpaperItem(wallpaperId, wallpaperUrl!!, isPremium, null)
+        }
 
     }
 

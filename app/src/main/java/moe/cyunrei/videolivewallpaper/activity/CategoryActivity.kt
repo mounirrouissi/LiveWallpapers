@@ -34,10 +34,15 @@ class CategoryActivity : AppCompatActivity() {
 
         // Sample data - replace with actual data
         val sampleData = listOf(
-            CardViewAdapter.WallpaperItem("android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
-            CardViewAdapter.WallpaperItem("android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
-            CardViewAdapter.WallpaperItem("android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
-            CardViewAdapter.WallpaperItem("android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+            CardViewAdapter.WallpaperItem(
+                "1",
+                "android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy,
+                false,
+                null
+            ),
+//            CardViewAdapter.WallpaperItem(1,"android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+//            CardViewAdapter.WallpaperItem(1,"android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
+//            CardViewAdapter.WallpaperItem(1,"android.resource://" + this.packageName + "/" + R.raw.mobile_straw_hat_luffy, false),
 // Add more items as needed
         )
 
