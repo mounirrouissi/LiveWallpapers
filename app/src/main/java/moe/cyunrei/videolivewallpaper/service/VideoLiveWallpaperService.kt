@@ -3,7 +3,6 @@ package moe.cyunrei.videolivewallpaper.service
 import android.app.WallpaperManager
 import android.content.*
 import android.media.MediaPlayer
-import android.net.Uri
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
 import android.util.Log
@@ -14,14 +13,14 @@ class VideoLiveWallpaperService : WallpaperService() {
     internal inner class VideoEngine : Engine() {
         private var mediaPlayer: MediaPlayer? = null
         private var broadcastReceiver: BroadcastReceiver? = null
-        private var videoUri: Uri? = null
+        private var videoFilePath: String? = null
 
         override fun onCreate(surfaceHolder: SurfaceHolder) {
             super.onCreate(surfaceHolder)
-            val videoFilePath =
+            videoFilePath =
                 this@VideoLiveWallpaperService.openFileInput("video_live_wallpaper_file_path")
                     .bufferedReader().readText()
-            videoUri = Uri.parse(videoFilePath)
+            Log.d("LiveWallpaperService", "Video file path: $videoFilePath")
             val intentFilter = IntentFilter(VIDEO_PARAMS_CONTROL_ACTION)
             registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
@@ -39,7 +38,7 @@ class VideoLiveWallpaperService : WallpaperService() {
             super.onSurfaceCreated(holder)
             mediaPlayer = MediaPlayer().apply {
                 setSurface(holder.surface)
-                videoUri?.let { setDataSource(this@VideoLiveWallpaperService, it) }
+                setDataSource(videoFilePath)
                 isLooping = true
                 setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
                 try {

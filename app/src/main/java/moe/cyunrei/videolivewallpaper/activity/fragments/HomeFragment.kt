@@ -99,7 +99,9 @@ class HomeFragment : Fragment() {
                 // Convert the result array into a list of WallpaperItem
                 val wallpaperItems = List(resultArray.length()) { i ->
                     val itemObject = resultArray.getJSONObject(i)
-                    val videoFile = File(context!!.cacheDir, itemObject.getString("key"))
+                    val videoFile : File
+                   //  if (context != null)
+                     videoFile = File(context?.cacheDir, itemObject.getString("key") ?: "")
 
                     // Download the video file
                     val url = "https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects/${itemObject.getString("key")}"

@@ -55,26 +55,39 @@ class CardViewAdapter(
 
             // Handle click event on the card's image
             holder.imageView.setOnClickListener {
-                if (item.isPremium) {
-                    // The wallpaper is premium
-                    val purchasedWallpaper = PricingFragment.getPurchasedWallpaper(context)
-                    if (purchasedWallpaper != null && purchasedWallpaper.id == item.id) {
-                        // The wallpaper has already been purchased, so set it directly
-                        setAsWallpaper(item.ImageResource, holder.itemView.context)
-                    } else {
-                        // The wallpaper has not been purchased, so show the pricing dialogue
-                        listener?.onPremiumItemClicked()
-                    }
-                } else {
-                    // The wallpaper is not premium, so set it as the wallpaper
-                    setAsWallpaper(item.ImageResource, holder.itemView.context)
-                }
+                handleWallpaperClick(item, context, holder)
             }
 
             // Set the visibility of the premium icon depending on whether the item is premium
             holder.premiumIcon.visibility = if (item.isPremium) View.VISIBLE else View.GONE
         }
 
+    private fun handleWallpaperClick(
+        item: WallpaperItem,
+        context: Context,
+        holder: ViewHolder
+    ) {
+        if (item.isPremium) {
+            // The wallpaper is premium
+            val purchasedWallpaper = PricingFragment.getPurchasedWallpaper(context)
+            if (purchasedWallpaper != null && purchasedWallpaper.id == item.id) {
+                // The wallpaper has already been purchased, so set it directly
+                setAsWallpaper(item.ImageResource, holder.itemView.context)
+            } else {
+                // The wallpaper has not been purchased, so show the pricing dialogue
+                listener?.onPremiumItemClicked()
+            }
+        } else {
+            // Save the video path for the service
+            holder.imageView.context.openFileOutput("video_live_wallpaper_file_path", Context.MODE_PRIVATE).use {
+                it.write(Uri.parse(item.ImageResource).toString().toByteArray())
+            }
+
+
+            // The wallpaper is not premium, so set it as the wallpaper
+            setAsWallpaper(item.ImageResource, holder.itemView.context)
+        }
+    }
 
 
     private fun setAsWallpaper(videoUri: String, context: Context?) {
