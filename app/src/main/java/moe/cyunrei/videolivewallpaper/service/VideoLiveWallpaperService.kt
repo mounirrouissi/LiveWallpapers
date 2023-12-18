@@ -14,13 +14,20 @@ class VideoLiveWallpaperService : WallpaperService() {
         private var mediaPlayer: MediaPlayer? = null
         private var broadcastReceiver: BroadcastReceiver? = null
         private var videoFilePath: String? = null
+        private var  videoFile: File? = null
 
         override fun onCreate(surfaceHolder: SurfaceHolder) {
             super.onCreate(surfaceHolder)
-            videoFilePath =
+            val videoFilePathText =
                 this@VideoLiveWallpaperService.openFileInput("video_live_wallpaper_file_path")
                     .bufferedReader().readText()
-            Log.d("LiveWallpaperService", "Video file path: $videoFilePath")
+
+             videoFile = File(this@VideoLiveWallpaperService.cacheDir, videoFilePathText ?: "")
+            videoFilePath = videoFilePathText
+
+            Log.d("LiveWallpaperService", "Video file videoFilePathText: $videoFilePathText")
+            Log.d("LiveWallpaperService", "Video file videoFile: $videoFile")
+            Log.d("LiveWallpaperService", "Video file videoFilePath: $videoFilePath")
             val intentFilter = IntentFilter(VIDEO_PARAMS_CONTROL_ACTION)
             registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
@@ -38,9 +45,18 @@ class VideoLiveWallpaperService : WallpaperService() {
             super.onSurfaceCreated(holder)
             mediaPlayer = MediaPlayer().apply {
                 setSurface(holder.surface)
-                setDataSource(videoFilePath)
+                try {
+                    setDataSource(videoFile!!.absolutePath)
+                } catch (e: IOException) {
+                    Log.e("LiveWallpaperService", "Failed to set data source", e)
+                    // Handle the error...
+                }
+
                 isLooping = true
-                setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+                if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                    mediaPlayer!!.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+                }
+
                 try {
                     prepare()
                     start()

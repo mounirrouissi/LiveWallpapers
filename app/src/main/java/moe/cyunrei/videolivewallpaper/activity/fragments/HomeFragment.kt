@@ -67,76 +67,81 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun fetchWallpaperDataFromR2() {
-        val client = OkHttpClient()
-        val account_id= "1079414e72226b3a1f5d5d5fc0adc423"
-        val key_id = "71c3ca34b001567adf52c9f6315d95b0d2d61"
-        val token = "71c3ca34b001567adf52c9f6315d95b0d2d61"
-        val request = Request.Builder()
-            .url("https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects")
-            .get()
-            .addHeader("X-Auth-Email", "mounirrouissi2@gmail.com")
-            .addHeader("X-Auth-Key", "${token}")
-            .build()
+        private fun fetchWallpaperDataFromR2() {
+            val client = OkHttpClient()
+            val account_id= "1079414e72226b3a1f5d5d5fc0adc423"
+            val key_id = "71c3ca34b001567adf52c9f6315d95b0d2d61"
+            val token = "71c3ca34b001567adf52c9f6315d95b0d2d61"
+            val request = Request.Builder()
+                .url("https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects")
+                .get()
+                .addHeader("X-Auth-Email", "mounirrouissi2@gmail.com")
+                .addHeader("X-Auth-Key", "${token}")
+                .build()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (!response.isSuccessful) {
-                    throw IOException("Unexpected code $response")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace()
                 }
 
-                val responseBody = response.body?.string()
-                Log.d("MainActivity", "Response: $responseBody")
-
-                // Parse the JSON response
-                val jsonObject = JSONObject(responseBody)
-                val resultArray = jsonObject.getJSONArray("result")
-
-                // Convert the result array into a list of WallpaperItem
-                val wallpaperItems = List(resultArray.length()) { i ->
-                    val itemObject = resultArray.getJSONObject(i)
-                    val videoFile : File
-                   //  if (context != null)
-                     videoFile = File(context?.cacheDir, itemObject.getString("key") ?: "")
-
-                    // Download the video file
-                    val url = "https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects/${itemObject.getString("key")}"
-                    val request = Request.Builder()
-                        .url(url)
-                        .get()
-                        .addHeader("X-Auth-Email", "mounirrouissi2@gmail.com")
-                        .addHeader("X-Auth-Key", "${token}")
-                        .build()
-                    val client = OkHttpClient()
-                    val response = client.newCall(request).execute()
-                    response.body?.byteStream()?.use { input ->
-                        FileOutputStream(videoFile).use { output ->
-                            input.copyTo(output)
-                        }
+                override fun onResponse(call: Call, response: Response) {
+                    if (!response.isSuccessful) {
+                        throw IOException("Unexpected code $response")
                     }
 
-                    // Generate a thumbnail from the video file
-                    val retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(videoFile.absolutePath)
-                    val thumbnail = retriever.getFrameAtTime(1000000)
+                    val responseBody = response.body?.string()
+                    Log.d("MainActivity", "Response: $responseBody")
 
-                    CardViewAdapter.WallpaperItem(
-                        id = itemObject.getString("etag"),
-                        ImageResource = itemObject.getString("key"),
-                        thumbnail = thumbnail,
-                        isPremium = false // Set this value based on your criteria for premium items
-                    )
+                    // Parse the JSON response
+                    val jsonObject = JSONObject(responseBody)
+                    val resultArray = jsonObject.getJSONArray("result")
+
+                    // Convert the result array into a list of WallpaperItem
+                    val wallpaperItems = List(resultArray.length()) { i ->
+                        val itemObject = resultArray.getJSONObject(i)
+                        val videoFile : File
+                       //  if (context != null)
+                         videoFile = File(context?.cacheDir, itemObject.getString("key") ?: "")
+
+                            // Download the video file
+                            val url =
+                                "https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects/${
+                                    itemObject.getString("key")
+                                }"
+                            val request = Request.Builder()
+                                .url(url)
+                                .get()
+                                .addHeader("X-Auth-Email", "mounirrouissi2@gmail.com")
+                                .addHeader("X-Auth-Key", "${token}")
+                                .build()
+                            val client = OkHttpClient()
+                            val response = client.newCall(request).execute()
+                            response.body?.byteStream()?.use { input ->
+                                FileOutputStream(videoFile).use { output ->
+                                    input.copyTo(output)
+                                }
+                            }
+
+                            // Generate a thumbnail from the video file
+                            val retriever = MediaMetadataRetriever()
+                            retriever.setDataSource(videoFile.absolutePath)
+                            val thumbnail = retriever.getFrameAtTime(1000000)
+
+                            CardViewAdapter.WallpaperItem(
+                                id = itemObject.getString("etag"),
+                                ImageResource = itemObject.getString("key"),
+                                thumbnail = thumbnail,
+                                isPremium = false // Set this value based on your criteria for premium items
+                            )
+                        }
+
+
+
+                    // Update the MutableLiveData object with the fetched data
+                    wallpaperData.postValue(wallpaperItems)
                 }
-
-                // Update the MutableLiveData object with the fetched data
-                wallpaperData.postValue(wallpaperItems)
-            }
-        })
-    }
+            })
+        }
 
     private fun permissionCheck() {
         if (ContextCompat.checkSelfPermission(
