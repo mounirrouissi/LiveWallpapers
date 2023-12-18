@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
@@ -38,8 +39,18 @@ class CardViewAdapter(
         val context = holder.itemView.context
         val thumbnail = item.thumbnail
 
+        // Show the progress bar
+        holder.progressBar.visibility = View.VISIBLE
+
+
+
         // Set the thumbnail as the image for the ImageView
         holder.imageView.setImageBitmap(thumbnail)
+
+
+        // Hide the progress bar
+        holder.progressBar.visibility = View.GONE
+
 
         // Handle click event on the card's image
         holder.imageView.setOnClickListener {
@@ -99,10 +110,12 @@ class CardViewAdapter(
         var imageView: ImageView
         var premiumIcon: ImageView
         var cardView:CardView
+        var progressBar: ProgressBar
         init {
             imageView = itemView.findViewById<ImageView>(R.id.imageView)
             premiumIcon = itemView.findViewById<ImageView>(R.id.premiumIcon)
             cardView = itemView.findViewById<CardView>(R.id.cardView)
+            progressBar = itemView.findViewById<ProgressBar>(R.id.progressBar)
         }
     }
 

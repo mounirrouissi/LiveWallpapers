@@ -17,12 +17,18 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
         <ImageView
             android:id="@+id/premiumIcon"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:src="@drawable/premium"
-
             android:background="@drawable/premium_badge_background"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
