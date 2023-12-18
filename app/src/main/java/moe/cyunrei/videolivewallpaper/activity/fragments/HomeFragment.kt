@@ -1,6 +1,7 @@
 package moe.cyunrei.videolivewallpaper.activity.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
@@ -16,6 +17,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
 import okhttp3.Call
@@ -28,12 +31,17 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+private const val ACCOUNT_ID = "1079414e72226b3a1f5d5d5fc0adc423"
+
+private const val TOKEN_ID = "71c3ca34b001567adf52c9f6315d95b0d2d61"
+
 class HomeFragment : Fragment() {
     companion object {
         private const val REQUEST_READ_STORAGE_PERMISSION = 1000
         const val CHOOSE_VIDEO_REQUEST_CODE = 1001
     }
 
+    private lateinit var wallpaperItems: List<CardViewAdapter.WallpaperItem>
     private val wallpaperData = MutableLiveData<List<CardViewAdapter.WallpaperItem>>()
 
     override fun onCreateView(
@@ -51,6 +59,7 @@ class HomeFragment : Fragment() {
         val recyclerViewRecent = view.findViewById<RecyclerView>(R.id.recyclerViewRecent)
         recyclerViewRecent.layoutManager = GridLayoutManager(context,2)
 
+
         // Fetch the wallpaper data from the Cloudflare R2 bucket
         fetchWallpaperDataFromR2()
 
@@ -67,11 +76,20 @@ class HomeFragment : Fragment() {
         }
     }
 
-        private fun fetchWallpaperDataFromR2() {
+
+    private fun fetchWallpaperDataFromR2() {
+        val sharedPreferences = context?.getSharedPreferences("wallpaper_data", Context.MODE_PRIVATE)
+        val cachedData = sharedPreferences?.getString("wallpaper_data", null)
+
+        if (cachedData != null) {
+            // Parse the JSON string and convert it into a list of WallpaperItem
+            val wallpaperItems = Gson().fromJson<List<CardViewAdapter.WallpaperItem>>(cachedData, object : TypeToken<List<CardViewAdapter.WallpaperItem>>() {}.type)
+            wallpaperData.postValue(wallpaperItems)
+        } else {
+            // If the data is not in the cache, fetch it from the server
             val client = OkHttpClient()
-            val account_id= "1079414e72226b3a1f5d5d5fc0adc423"
-            val key_id = "71c3ca34b001567adf52c9f6315d95b0d2d61"
-            val token = "71c3ca34b001567adf52c9f6315d95b0d2d61"
+            val account_id= ACCOUNT_ID
+            val token = TOKEN_ID
             val request = Request.Builder()
                 .url("https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects")
                 .get()
@@ -100,48 +118,52 @@ class HomeFragment : Fragment() {
                     val wallpaperItems = List(resultArray.length()) { i ->
                         val itemObject = resultArray.getJSONObject(i)
                         val videoFile : File
-                       //  if (context != null)
-                         videoFile = File(context?.cacheDir, itemObject.getString("key") ?: "")
+                        videoFile = File(context?.cacheDir, itemObject.getString("key") ?: "")
 
-                            // Download the video file
-                            val url =
-                                "https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects/${
-                                    itemObject.getString("key")
-                                }"
-                            val request = Request.Builder()
-                                .url(url)
-                                .get()
-                                .addHeader("X-Auth-Email", "mounirrouissi2@gmail.com")
-                                .addHeader("X-Auth-Key", "${token}")
-                                .build()
-                            val client = OkHttpClient()
-                            val response = client.newCall(request).execute()
-                            response.body?.byteStream()?.use { input ->
-                                FileOutputStream(videoFile).use { output ->
-                                    input.copyTo(output)
-                                }
+                        // Download the video file
+                        val url =
+                            "https://api.cloudflare.com/client/v4/accounts/${account_id}/r2/buckets/live1/objects/${
+                                itemObject.getString("key")
+                            }"
+                        val request = Request.Builder()
+                            .url(url)
+                            .get()
+                            .addHeader("X-Auth-Email", "mounirrouissi2@gmail.com")
+                            .addHeader("X-Auth-Key", "${token}")
+                            .build()
+                        val client = OkHttpClient()
+                        val response = client.newCall(request).execute()
+                        response.body?.byteStream()?.use { input ->
+                            FileOutputStream(videoFile).use { output ->
+                                input.copyTo(output)
                             }
-
-                            // Generate a thumbnail from the video file
-                            val retriever = MediaMetadataRetriever()
-                            retriever.setDataSource(videoFile.absolutePath)
-                            val thumbnail = retriever.getFrameAtTime(1000000)
-
-                            CardViewAdapter.WallpaperItem(
-                                id = itemObject.getString("etag"),
-                                ImageResource = itemObject.getString("key"),
-                                thumbnail = thumbnail,
-                                isPremium = false // Set this value based on your criteria for premium items
-                            )
                         }
 
+                        // Generate a thumbnail from the video file
+                        val retriever = MediaMetadataRetriever()
+                        retriever.setDataSource(videoFile.absolutePath)
+                        val thumbnail = retriever.getFrameAtTime(1000000)
 
+                        CardViewAdapter.WallpaperItem(
+                            id = itemObject.getString("etag"),
+                            ImageResource = itemObject.getString("key"),
+                            thumbnail = thumbnail,
+                            isPremium = false // Set this value based on your criteria for premium items
+                        )
+                    }
+
+                    // Convert the list of WallpaperItem into a JSON string
+                    val jsonString = Gson().toJson(wallpaperItems)
+
+                    // Store the fetched data in SharedPreferences
+                    sharedPreferences?.edit()?.putString("wallpaper_data", jsonString)?.apply()
 
                     // Update the MutableLiveData object with the fetched data
                     wallpaperData.postValue(wallpaperItems)
                 }
             })
         }
+    }
 
     private fun permissionCheck() {
         if (ContextCompat.checkSelfPermission(

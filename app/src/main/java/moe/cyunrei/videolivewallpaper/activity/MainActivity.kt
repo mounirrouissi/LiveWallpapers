@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity(), CategoriesFragment.CategoryFragmentLis
          // Optional: If you want to remove the default title text
          supportActionBar?.setDisplayShowTitleEnabled(false)
  */
+
+        // Clear SharedPreferences
+        val sharedPreferences = getSharedPreferences("wallpaper_data", Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
         loadThemeState()
         setAppropriateTheme()
 
