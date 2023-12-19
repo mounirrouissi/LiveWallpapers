@@ -7,10 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import moe.cyunrei.videolivewallpaper.R
+import moe.cyunrei.videolivewallpaper.activity.Category
+
 import moe.cyunrei.videolivewallpaper.activity.listners.OnCategoryClickListener
 
 class CategoriesAdapter(
-        private val categoriesList: List<String>,
+        private val categoriesList: List<Category>,
         private val clickListener: OnCategoryClickListener
 ) : RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
 
@@ -21,8 +23,8 @@ class CategoriesAdapter(
 
         override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
                 val category = categoriesList[position]
-                holder.categoryName.text = category
-                holder.categoryImage.setImageResource(R.drawable.animal) // Replace with your image
+                holder.categoryName.text = category.name
+                holder.categoryImage.setImageResource(category.imageResourceId) // Replace with your image
                 holder.itemView.setOnClickListener { clickListener.onCategoryClicked(category) }
         }
 
