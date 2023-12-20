@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/home"
-        android:title="Home" />
-    <item
         android:id="@+id/navigation_categories"
-        android:icon="@drawable/category"
+        android:icon="@drawable/home"
         android:title="Categories" />
+    <item
+        android:id="@+id/navigation_latest"
+        android:icon="@drawable/category"
+        android:title="Latest" />
     <item
         android:id="@+id/navigation_prime"
         android:icon="@drawable/premium"

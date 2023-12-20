@@ -28,6 +28,7 @@
         <activity android:name=".activity.ImageViewActivity" />
         <activity android:name=".activity.CategoryActivity" />
         <activity android:name=".activity.WallpaperOptionsActivity" />
+        <activity android:name=".activity.OnboardingActivity" />
         <activity
             android:name=".activity.SettingsActivity"
             android:exported="false"

@@ -26,9 +26,12 @@ class CategoriesFragment : Fragment(), OnCategoryClickListener {
 
 
         categoriesList =  listOf(
-            Category("Looney Tunes", R.drawable.bunny1),
-            Category("Animes", R.drawable.dragon),
-            Category("Natures", R.drawable.b)
+                Category("Bugs Bunny", R.drawable.bunny1),
+            Category("Tom and Jerry", R.drawable.tom),
+            Category("Mickey Mouse", R.drawable.mickey),
+            Category("The Simpsons", R.drawable.simpsons1),
+            Category("Rick And Morty", R.drawable.rick),
+            Category("Scooby Doo", R.drawable.scooby)
         )
         adapter = CategoriesAdapter(categoriesList, this)
         categoriesRecyclerView.adapter = adapter

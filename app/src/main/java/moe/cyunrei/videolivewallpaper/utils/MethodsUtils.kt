@@ -12,6 +12,11 @@ class MethodsUtils {
             val networkInfo = connectivityManager.activeNetworkInfo
             return networkInfo != null && networkInfo.isConnected
         }
+
+        fun formatCategoryTitle(input: String?): String {
+            return input?.replace(" ", "")!!.toLowerCase()
+        }
+
     }
 
 }

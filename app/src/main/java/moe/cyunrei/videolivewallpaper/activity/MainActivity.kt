@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.fragments.CategoriesFragment
@@ -23,77 +24,42 @@ import moe.cyunrei.videolivewallpaper.utils.DocumentUtils.getPath
 
 class MainActivity : AppCompatActivity(), CategoriesFragment.CategoryFragmentListener  {
     private var isDarkTheme = false
+    private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /* val toolbar: Toolbar = findViewById(R.id.toolbar)
-         setSupportActionBar(toolbar)
 
-         // Optional: If you want to remove the default title text
-         supportActionBar?.setDisplayShowTitleEnabled(false)
- */
+        val sharedPreferencesOnBoard = getSharedPreferences("onboarding_data", Context.MODE_PRIVATE)
+        val isOnboardingCompleted = sharedPreferencesOnBoard.getBoolean("onboarding_completed", false)
 
-        // Clear SharedPreferences
-        val sharedPreferences = getSharedPreferences("wallpaper_data", Context.MODE_PRIVATE)
-        sharedPreferences.edit().clear().apply()
-        loadThemeState()
-        setAppropriateTheme()
+        if (!isOnboardingCompleted) {
+            // Onboarding is not completed, start moe.cyunrei.videolivewallpaper.activity.OnboardingActivity
+            val intent = Intent(this, OnboardingActivity::class.java)
+            startActivity(intent)
+            finish() // Close MainActivity to prevent it from being in the back stack
+        } else {
+            // Onboarding is completed, set up the main activity
+            setContentView(R.layout.main_activity)
 
-        setContentView(R.layout.main_activity)
-        // Initialize and load the HomeFragment as the default fragment
-        loadFragment(HomeFragment())
+            // Clear SharedPreferences
+            val sharedPreferences = getSharedPreferences("wallpaper_data", Context.MODE_PRIVATE)
+            sharedPreferences.edit().clear().apply()
 
-        // Existing code for setting up the Bottom Navigation
-        setupBottomNavigation()
-        /*permissionCheck
-        findViewById<Button?>(R.id.choose_video_file).apply {
-            setOnClickListener { chooseVideo() }
+            loadThemeState()
+            setAppropriateTheme()
+
+            // Initialize and load the HomeFragment as the default fragment
+            loadFragment(CategoriesFragment())
+
+            // Existing code for setting up the Bottom Navigation
+            setupBottomNavigation()
         }
-
-        findViewById<Button?>(R.id.add_video_file_path).apply {
-            setOnClickListener {
-                val edit = EditText(this@MainActivity)
-                AlertDialog.Builder(this@MainActivity).apply {
-                    setTitle(getString(R.string.add_path))
-                    setView(edit)
-                    setPositiveButton(
-                        getString(R.string.apply)
-                    ) { _, _ ->
-                        val videoFilePath: String = edit.text.toString()
-                        this@MainActivity.openFileOutput(
-                            "video_live_wallpaper_file_path",
-                            Context.MODE_PRIVATE
-                        ).use {
-                            it.write(videoFilePath.toByteArray())
-                        }
-                        VideoLiveWallpaperService.setToWallPaper(this@MainActivity)
-                    }
-                    setNegativeButton(
-                        getString(R.string.cancel)
-                    ) { _, _ -> }
-                    setCancelable(true)
-                    create().apply {
-                        setCanceledOnTouchOutside(true)
-                        show()
-                    }
-                }
-            }
-        }
-
-        findViewById<Button?>(R.id.settings).apply {
-            setOnClickListener {
-                Intent(this@MainActivity, SettingsActivity::class.java).also {
-                    startActivity(it)
-                }
-            }
-        }*/
-
     }
     private fun setupBottomNavigation() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_home -> {
+                R.id.navigation_latest -> {
                     // Load HomeFragment
                     loadFragment(HomeFragment())
                 }
