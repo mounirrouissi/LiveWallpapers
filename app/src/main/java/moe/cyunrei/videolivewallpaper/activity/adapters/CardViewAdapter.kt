@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -13,39 +12,54 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.fragments.PricingFragment
 import moe.cyunrei.videolivewallpaper.activity.listners.PremiumItemListener
 import moe.cyunrei.videolivewallpaper.service.VideoLiveWallpaperService
-import java.io.File
+
 class CardViewAdapter(
-    items: List<WallpaperItem>, private val isPremium: Boolean = false,
+    private val items: Flow<WallpaperItem>,
+    private val isPremium: Boolean = false,
     private val listener: PremiumItemListener?
-) : RecyclerView.Adapter<CardViewAdapter.ViewHolder>() {
-    private val items: List<WallpaperItem> = items
+) : RecyclerView.Adapter<CardViewAdapter.ViewHolder>(), CoroutineScope by MainScope() {
+    private var itemList: List<WallpaperItem> = listOf()
+
+    init {
+        launch {
+            items.collect {
+                itemList += it
+                notifyDataSetChanged()
+            }
+
+        }
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.item_card_view, parent, false)
-
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item: WallpaperItem = items[position]
+        val item: WallpaperItem = itemList[position]
         val context = holder.itemView.context
         val thumbnail = item.thumbnail
         // Show the progress bar
-        holder.progressBar.visibility = View.VISIBLE
+
         // Set the thumbnail as the image for the ImageView
         holder.imageView.setImageBitmap(thumbnail)
         // Hide the progress bar
-        holder.progressBar.visibility = View.GONE
         // Handle click event on the card's image
         holder.imageView.setOnClickListener {
             handleWallpaperClick(item, context, holder)
         }
         // Set the visibility of the premium icon depending on whether the item is premium
         holder.premiumIcon.visibility = if (item.isPremium) View.VISIBLE else View.GONE
+
     }
     private fun handleWallpaperClick(
         item: WallpaperItem,
@@ -85,18 +99,17 @@ class CardViewAdapter(
         context?.startActivity(intent)
     }
     override fun getItemCount(): Int {
-        return items.size
+        return itemList.size
     }
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView
         var premiumIcon: ImageView
         var cardView:CardView
-        var progressBar: ProgressBar
+
         init {
             imageView = itemView.findViewById<ImageView>(R.id.imageView)
             premiumIcon = itemView.findViewById<ImageView>(R.id.premiumIcon)
             cardView = itemView.findViewById<CardView>(R.id.cardView)
-            progressBar = itemView.findViewById<ProgressBar>(R.id.progressBar)
         }
     }
     data class WallpaperItem(

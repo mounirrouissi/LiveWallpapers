@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.Category
 import moe.cyunrei.videolivewallpaper.activity.adapters.CategoriesAdapter
 import moe.cyunrei.videolivewallpaper.activity.CategoryActivity
+import moe.cyunrei.videolivewallpaper.activity.fragments.ProgressPointsView.ProgressPointsView
 import moe.cyunrei.videolivewallpaper.activity.listners.OnCategoryClickListener
 
 class CategoriesFragment : Fragment(), OnCategoryClickListener {
@@ -26,12 +28,12 @@ class CategoriesFragment : Fragment(), OnCategoryClickListener {
 
 
         categoriesList =  listOf(
-                Category("Bugs Bunny", R.drawable.bunny1),
+                Category("Bugs Bunny", R.drawable.bunny2),
             Category("Tom and Jerry", R.drawable.tom),
             Category("Mickey Mouse", R.drawable.mickey),
-            Category("The Simpsons", R.drawable.simpsons1),
-            Category("Rick And Morty", R.drawable.rick),
-            Category("Scooby Doo", R.drawable.scooby)
+            Category("The Simpsons", R.drawable.simpsons2),
+            Category("Rick And Morty", R.drawable.rick3),
+            Category("Scooby Doo", R.drawable.scooby2jpg)
         )
         adapter = CategoriesAdapter(categoriesList, this)
         categoriesRecyclerView.adapter = adapter

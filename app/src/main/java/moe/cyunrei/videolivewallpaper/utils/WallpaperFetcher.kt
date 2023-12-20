@@ -1,7 +1,3 @@
-package moe.cyunrei.videolivewallpaper.utils
-
-
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,10 +6,13 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
 import moe.cyunrei.videolivewallpaper.activity.fragments.HomeFragment
-
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -27,31 +26,29 @@ class WallpaperFetcher(private val context: Context) {
     private val sharedPreferences = context.getSharedPreferences("wallpaper_data", Context.MODE_PRIVATE)
     private val cachedData = sharedPreferences.getString("wallpaper_data", null)
 
-    suspend fun fetchWallpaperDataFromR2(bucket_name: String?="latest"): List<CardViewAdapter.WallpaperItem> {
-        return if (cachedData != null) {
+    suspend fun fetchWallpaperDataFromR2(bucket_name: String?="latest"): Flow<CardViewAdapter.WallpaperItem> {
+        return if (bucket_name == "latest" && cachedData != null) {
             handleCachedData(cachedData,bucket_name)
         } else {
-            bucket_name?.let { fetchDataFromServer(it) } ?: emptyList()
+            bucket_name?.let { fetchDataFromServer(it) } ?: emptyFlow()
         }
     }
 
-
     @SuppressLint("SuspiciousIndentation")
-    private fun handleCachedData(cachedData: String, bucket_name: String?): List<CardViewAdapter.WallpaperItem> {
+    private suspend fun handleCachedData(cachedData: String, bucket_name: String?): Flow<CardViewAdapter.WallpaperItem> {
         val wallpaperItems = parseCachedData(cachedData)
-        if (bucket_name == "latest")
-        HomeFragment.wallpaperData.postValue(wallpaperItems)
+            HomeFragment.wallpaperData.postValue(wallpaperItems.toList())
         return wallpaperItems
     }
 
-    private fun parseCachedData(cachedData: String): List<CardViewAdapter.WallpaperItem> {
+    private fun parseCachedData(cachedData: String): Flow<CardViewAdapter.WallpaperItem> {
         return Gson().fromJson<List<CardViewAdapter.WallpaperItem>>(
             cachedData,
             object : TypeToken<List<CardViewAdapter.WallpaperItem>>() {}.type
-        )
+        ).asFlow()
     }
 
-    suspend fun fetchDataFromServer(bucket_name:String): List<CardViewAdapter.WallpaperItem> = withContext(Dispatchers.IO) {
+    suspend fun fetchDataFromServer(bucket_name:String): Flow<CardViewAdapter.WallpaperItem> = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val token = HomeFragment.TOKEN_ID
 
@@ -68,7 +65,7 @@ class WallpaperFetcher(private val context: Context) {
         }
     }
 
-    private suspend fun handleServerResponse(response: Response, bucket_name: String): List<CardViewAdapter.WallpaperItem> {
+    private suspend fun handleServerResponse(response: Response, bucket_name: String): Flow<CardViewAdapter.WallpaperItem> {
         if (!response.isSuccessful) {
             throw IOException("Unexpected code ${response}")
         }
@@ -76,20 +73,21 @@ class WallpaperFetcher(private val context: Context) {
         val responseBody = response.body?.string()
         Log.d("MainActivity", "Response: $responseBody")
 
-
-        val wallpaperItems = parseServerResponse(responseBody)
+        val wallpaperItems = parseServerResponse(responseBody,bucket_name)
         if (bucket_name == "latest")
-          updateSharedPreferences(wallpaperItems)
+            updateSharedPreferences(wallpaperItems.toList())
         return wallpaperItems
     }
 
-    private suspend fun parseServerResponse(responseBody: String?): List<CardViewAdapter.WallpaperItem> {
+    private suspend fun parseServerResponse(responseBody: String?, bucket_name: String): Flow<CardViewAdapter.WallpaperItem> {
         val jsonObject = JSONObject(responseBody)
         val resultArray = jsonObject.getJSONArray("result")
 
         return List(resultArray.length()) { i ->
             val itemObject = resultArray.getJSONObject(i)
-            val videoFile: File = downloadVideoFile(itemObject)
+//            val videoFile: File = downloadVideoFile(itemObject,bucket_name)
+            val videoFile = File(context.cacheDir, itemObject.getString("key") ?: "")
+
             val thumbnail = generateThumbnail(videoFile)
 
             CardViewAdapter.WallpaperItem(
@@ -98,13 +96,13 @@ class WallpaperFetcher(private val context: Context) {
                 thumbnail = thumbnail,
                 isPremium = false // Set this value based on your criteria for premium items
             )
-        }
+        }.asFlow()
     }
 
-    suspend fun downloadVideoFile(itemObject: JSONObject): File = withContext(Dispatchers.IO) {
+     fun downloadVideoFile(itemObject: JSONObject, bucket_name: String): File  {
         val videoFile = File(context.cacheDir, itemObject.getString("key") ?: "")
         val url =
-            "https://api.cloudflare.com/client/v4/accounts/${HomeFragment.ACCOUNT_ID}/r2/buckets/live1/objects/${itemObject.getString("key")}"
+            "https://api.cloudflare.com/client/v4/accounts/${HomeFragment.ACCOUNT_ID}/r2/buckets/${bucket_name}/objects/${itemObject.getString("key")}"
 
         val request = Request.Builder()
             .url(url)
@@ -120,7 +118,7 @@ class WallpaperFetcher(private val context: Context) {
                 input.copyTo(output)
             }
         }
-        return@withContext videoFile
+        return videoFile
     }
 
     suspend fun generateThumbnail(videoFile: File): Bitmap? = withContext(Dispatchers.IO) {

@@ -1,5 +1,6 @@
 package moe.cyunrei.videolivewallpaper.activity
 
+import WallpaperFetcher
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -11,7 +12,6 @@ import kotlinx.coroutines.launch
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.adapters.OnboardingAdapter
 import moe.cyunrei.videolivewallpaper.utils.MethodsUtils
-import moe.cyunrei.videolivewallpaper.utils.WallpaperFetcher
 
 class OnboardingActivity : AppCompatActivity() {
 

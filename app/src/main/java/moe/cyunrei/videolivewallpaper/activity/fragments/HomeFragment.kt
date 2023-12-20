@@ -1,18 +1,13 @@
 package moe.cyunrei.videolivewallpaper.activity.fragments
 
+import WallpaperFetcher
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -21,28 +16,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import moe.cyunrei.videolivewallpaper.R
 import moe.cyunrei.videolivewallpaper.activity.adapters.CardViewAdapter
 import moe.cyunrei.videolivewallpaper.activity.fragments.ProgressPointsView.ProgressPointsView
 import moe.cyunrei.videolivewallpaper.utils.MethodsUtils
-import moe.cyunrei.videolivewallpaper.utils.WallpaperFetcher
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class HomeFragment : Fragment() {
     companion object {
@@ -73,7 +55,7 @@ class HomeFragment : Fragment() {
 
         // Show the progress points view and the loading message
         progressPointsView.visibility = View.VISIBLE
-        loadingMessage.visibility = View.VISIBLE
+      //  loadingMessage.visibility = View.VISIBLE
         progressPointsView.setPoints(3)
 
         // Fetch the wallpaper data from the Cloudflare R2 bucket
@@ -89,10 +71,10 @@ class HomeFragment : Fragment() {
 
         // Observe the MutableLiveData object and update the RecyclerView when the data changes
         wallpaperData.observe(viewLifecycleOwner, Observer { data ->
-            recyclerViewRecent.adapter = CardViewAdapter(data, listener = null)
+            recyclerViewRecent.adapter = CardViewAdapter(data.asFlow(), listener = null)
 
             // Hide the progress points view and the loading message
-            loadingMessage.visibility = View.GONE
+            //loadingMessage.visibility = View.GONE
             progressPointsView.visibility = View.GONE
         })
 
